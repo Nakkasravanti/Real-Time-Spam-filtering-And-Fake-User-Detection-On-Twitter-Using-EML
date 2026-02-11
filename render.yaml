@@ -3,6 +3,7 @@ services:
   - type: web
     name: spamshield-backend
     runtime: python
+    plan: free
     buildCommand: pip install -r backend/requirements.txt
     startCommand: gunicorn --chdir backend app:app
     envVars:
@@ -15,6 +16,7 @@ services:
   - type: web
     name: spamshield-frontend
     runtime: static
+    plan: free
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     envVars:

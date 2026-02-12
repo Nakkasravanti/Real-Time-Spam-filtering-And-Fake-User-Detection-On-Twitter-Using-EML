@@ -155,8 +155,10 @@ class MLService:
                             "is_spam": is_spam,
                             "is_fake": is_fake
                         })
-                except Exception as e:
-                    print(f"Error reading {fdata}: {e}")
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return {"error": f"Internal process failed: {str(e)}"}
 
         # Save features
         with open(self.dataset_path, "w") as f:

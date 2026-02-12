@@ -8,6 +8,14 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 
 ml_service = MLService()
 
+@app.errorhandler(500)
+def handle_500(e):
+    return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return jsonify({"error": "Unexpected Error", "details": str(e)}), 500
+
 
 @app.route('/')
 def home():

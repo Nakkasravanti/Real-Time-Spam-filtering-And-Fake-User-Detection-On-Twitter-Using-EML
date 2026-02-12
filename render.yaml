@@ -4,8 +4,8 @@ services:
     name: spamshield-backend
     runtime: python
     plan: free
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: gunicorn --chdir backend app:app
+    buildCommand: pip install -r backend/requirements.txt && python -m nltk.downloader stopwords
+    startCommand: gunicorn --chdir backend app:app -b 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0

@@ -51,11 +51,26 @@ def predict_text():
 @app.route('/api/analyze', methods=['POST'])
 def analyze_folder():
     print("DEBUG: Received analyze request")
-    folder_path = request.json.get('path', 'tweets') 
-    if not os.path.isabs(folder_path):
-        folder_path = os.path.join(os.getcwd(), folder_path)
+    folder_name = request.json.get('path', 'tweets') 
     
-    print(f"DEBUG: Analyzing path: {folder_path}")
+    # Try multiple possible locations for the folder
+    possible_paths = [
+        os.path.join(os.getcwd(), folder_name),           # Local /backend/tweets
+        os.path.join(os.path.dirname(os.getcwd()), folder_name), # Repo root /tweets
+        os.path.abspath(folder_name)                      # Absolute
+    ]
+    
+    folder_path = None
+    for p in possible_paths:
+        if os.path.exists(p):
+            folder_path = p
+            break
+            
+    if not folder_path:
+        # Default to first one if none exist yet (will eventually return JSON error from MLService)
+        folder_path = possible_paths[1] 
+
+    print(f"DEBUG: Selected path: {folder_path}")
     result = ml_service.analyze_folder(folder_path)
     print("DEBUG: Analysis complete")
     return jsonify(result)

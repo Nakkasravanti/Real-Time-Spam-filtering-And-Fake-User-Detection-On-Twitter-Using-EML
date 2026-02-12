@@ -27,7 +27,7 @@ services:
     routes:
       - type: rewrite
         source: /api/*
-        destination: http://spamshield-backend/api/*
+        destination: http://spamshield-backend:10000/api/*
       - type: rewrite
         source: /*
         destination: /index.html

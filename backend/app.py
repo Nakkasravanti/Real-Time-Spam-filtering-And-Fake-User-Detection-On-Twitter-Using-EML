@@ -3,10 +3,20 @@ from flask_cors import CORS
 import os
 from ml_service import MLService
 
-app = Flask(__name__)
+# Configure static/template folders for unified deployment
+# The dist folder will be at the root, so from /backend it's ../frontend/dist
+app = Flask(__name__, 
+            static_folder='../frontend/dist', 
+            static_url_path='/')
+
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 ml_service = MLService()
+
+@app.errorhandler(404)
+def not_found(e):
+    # Catch-all route to serve index.html for React routing
+    return app.send_static_file('index.html')
 
 @app.errorhandler(500)
 def handle_500(e):
@@ -19,6 +29,10 @@ def handle_exception(e):
 
 @app.route('/')
 def home():
+    return app.send_static_file('index.html')
+
+@app.route('/api/status')
+def status():
     return jsonify({"message": "Spam Shield AI Backend is running", "status": "healthy"})
 
 @app.route('/api/health')
